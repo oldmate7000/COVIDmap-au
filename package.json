@@ -1,0 +1,36 @@
+{
+  "name": "yawa",
+  "version": "0.0.1",
+  "description": "A Weather App, built on MERN stack, using OpenWeatherMap's API",
+  "main": "server.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack --config webpack.dev.js"
+  },
+  "devDependencies": {
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.0.0",
+    "babel-preset-react": "^6.24.1",
+    "html-webpack-plugin": "^3.2.0",
+    "css-loader": "^3.4.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "clean-webpack-plugin": "^3.0.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": "13.x"
+  },
+  "repository": {
+    "url": ""
+  },
+  "license": "MIT",
+  "keywords": [
+    "COVID19",
+    "Coronavirus",
+    "map"
+  ]
+}
