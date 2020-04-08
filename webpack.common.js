@@ -7,7 +7,7 @@ const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 //well - it's for the experience of it on my part
 
 module.exports = {
-  context: path.join(__dirname, './'),
+  context: path.join(__dirname, './app'),
   entry: {
     index: './src/index.js',
   },
@@ -26,16 +26,17 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         options: {
-          presets: ['react']
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ["@babel/plugin-proposal-object-rest-spread"]
         },
         exclude: /node_modules/,
-        include: path.join(__dirname, 'src'),
+        include: path.join(__dirname, './app/src'),
       },
       {
         test: /\.css$/,
         loader: [MiniCssExtractPlugin.loader, 'css-loader'],
         exclude: /node_modules/,
-        include: path.join(__dirname, 'src'),
+        include: path.join(__dirname, './app/src'),
       }
     ]
   },
