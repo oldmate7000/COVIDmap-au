@@ -2,7 +2,8 @@ const express       = require('express');
 const bodyParser    = require('body-parser');
 const path          = require('path');
 const request       = require('request')
-const postcodes     = require('./geojson/NSW_PC_100pc_TOPO.json')
+const NSWpostcodes  = require('./geojson/NSW_PC_100pc_TOPO.json')
+
 require('dotenv').config() //so we can make use of .env files
 
 
@@ -18,7 +19,12 @@ app.get('/', (req, res) => {
 })
 
 app.get('/postcodes', (req, res) => {
-  res.json(postcodes)
+  console.log(req.query)
+  switch(req.query.state){
+    case 'nsw':
+      console.log('sending nsw map')
+      res.json(NSWpostcodes)
+  }
 })
 
 app.get('/getCOVIDdata', function (req, res) {

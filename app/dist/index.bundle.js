@@ -66335,8 +66335,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -66365,6 +66363,7 @@ var ReactLeaflet = __webpack_require__(/*! react-leaflet */ "../node_modules/rea
 
 var LeafletMap = ReactLeaflet.Map,
     TileLayer = ReactLeaflet.TileLayer,
+    Control = ReactLeaflet.Control,
     Marker = ReactLeaflet.Marker,
     Popup = ReactLeaflet.Popup;
 
@@ -66375,59 +66374,60 @@ var scale = __webpack_require__(/*! d3-scale */ "../node_modules/d3-scale/src/in
 var colourscale = __webpack_require__(/*! d3-scale-chromatic */ "../node_modules/d3-scale-chromatic/src/index.js");
 
 
- // import { gridLayer } from 'leaflet';
+ // import { Control } from 'leaflet';
+// import { gridLayer } from 'leaflet';
 
-function getPostCodes() {
-  console.log('sending request for post code areas');
-  return $.getJSON(window.location.origin + '/postcodes');
-}
+var NSW = /*#__PURE__*/function (_React$Component) {
+  _inherits(NSW, _React$Component);
 
-function _getCOVIDNumbers() {
-  console.log('time to get COVID numbers');
-  return $.getJSON('/getCOVIDdata');
-}
+  var _super = _createSuper(NSW);
 
-var App = /*#__PURE__*/function (_React$Component) {
-  _inherits(App, _React$Component);
-
-  var _super = _createSuper(App);
-
-  function App(props) {
+  function NSW(props) {
     var _this;
 
-    _classCallCheck(this, App);
+    _classCallCheck(this, NSW);
 
     _this = _super.call(this, props);
     _this.state = {
-      lat: -33.8567891,
-      lng: 151.2151911,
-      zoom: 11,
-      cases: false,
-      maxCases: 0,
-      postcodes: {},
-      suburbs: {}
+      updated: false,
+      map: {}
     };
+    _this.mapFromServer = _this.mapFromServer.bind(_assertThisInitialized(_this));
+    _this.COVIDFromServer = _this.COVIDFromServer.bind(_assertThisInitialized(_this));
     _this.getCOVIDNumbers = _this.getCOVIDNumbers.bind(_assertThisInitialized(_this));
     _this.getPostalAreas = _this.getPostalAreas.bind(_assertThisInitialized(_this));
+    _this.onEachFeature = _this.onEachFeature.bind(_assertThisInitialized(_this));
+    _this.highlightFeature = _this.highlightFeature.bind(_assertThisInitialized(_this));
+    _this.resetHighlight = _this.resetHighlight.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  _createClass(App, [{
+  _createClass(NSW, [{
+    key: "mapFromServer",
+    value: function mapFromServer() {
+      console.log('sending request for post code areas');
+      return $.getJSON(window.location.origin + '/postcodes', {
+        state: 'nsw'
+      });
+    }
+  }, {
+    key: "COVIDFromServer",
+    value: function COVIDFromServer() {
+      console.log('time to get COVID numbers');
+      return $.getJSON('/getCOVIDdata', {
+        state: 'nsw'
+      });
+    }
+  }, {
     key: "getCOVIDNumbers",
     value: function getCOVIDNumbers() {
       var _this2 = this;
 
-      _getCOVIDNumbers().then(function (data) {
-        var maxCaseCount = 0;
-
-        for (var x in data) {
-          if (data[x].length > maxCaseCount) {
-            maxCaseCount = data[x].length;
-          }
-        }
+      this.COVIDFromServer().then(function (data) {
+        _this2.props.setMax(data);
 
         var geos = _this2.state.postcodes;
-        geos.objects.POA_2016_AUST.geometries.forEach(function (area) {
+        geos.objects.NSW_PC_100pc_TOPO.geometries.forEach(function (area) {
           if (data[area.properties.POA_CODE16]) {
             area.properties['cvCases'] = data[area.properties.POA_CODE16];
           } else {
@@ -66436,9 +66436,8 @@ var App = /*#__PURE__*/function (_React$Component) {
         });
 
         _this2.setState({
-          cases: true,
-          postcodes: geos,
-          maxCases: maxCaseCount
+          updated: true,
+          map: geos
         });
       });
     }
@@ -66448,7 +66447,7 @@ var App = /*#__PURE__*/function (_React$Component) {
       var _this3 = this;
 
       console.log('getPostalAreas');
-      getPostCodes().then(function (data) {
+      this.mapFromServer().then(function (data) {
         console.log(data);
 
         _this3.setState({
@@ -66463,44 +66462,111 @@ var App = /*#__PURE__*/function (_React$Component) {
       this.getCOVIDNumbers();
     }
   }, {
+    key: "highlightFeature",
+    value: function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.85
+      });
+    }
+  }, {
+    key: "resetHighlight",
+    value: function resetHighlight(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.3
+      });
+    }
+  }, {
+    key: "onEachFeature",
+    value: function onEachFeature(feature, layer) {
+      var popupContent = "<Popup>\n        Postcode: ".concat(feature.properties.POA_CODE16, "<br/>\n        Total cases: ").concat(feature.properties.cvCases.length, "<br/>\n        </Popup>");
+      layer.bindPopup(popupContent);
+      layer.on({
+        mouseover: this.highlightFeature,
+        mouseout: this.resetHighlight
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      if (!(Object.keys(this.state.map).length === 0 && this.state.map.constructor === Object)) {
+        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          data: this.state.map,
+          style: function style(feature) {
+            // console.log(feature)
+            return {
+              color: 'black',
+              opacity: 1,
+              fillColor: _this4.props.colour(feature.properties.cvCases.length),
+              weight: 1,
+              fillOpacity: 0.3
+            };
+          },
+          onEachFeature: this.onEachFeature
+        });
+      } else {
+        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for NSW");
+      }
+    }
+  }]);
+
+  return NSW;
+}(React.Component);
+
+var App = /*#__PURE__*/function (_React$Component2) {
+  _inherits(App, _React$Component2);
+
+  var _super2 = _createSuper(App);
+
+  function App(props) {
+    var _this5;
+
+    _classCallCheck(this, App);
+
+    _this5 = _super2.call(this, props);
+    _this5.state = {
+      lat: -33.8567891,
+      lng: 151.2151911,
+      zoom: 11,
+      maxCases: 0
+    };
+    _this5.setMax = _this5.setMax.bind(_assertThisInitialized(_this5));
+    return _this5;
+  }
+
+  _createClass(App, [{
+    key: "setMax",
+    value: function setMax(data) {
+      var currentMax = this.state.maxCases;
+
+      for (var x in data) {
+        if (data[x].length > currentMax) {
+          currentMax = data[x].length;
+        }
+      }
+
+      this.setState({
+        maxCases: currentMax
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var position = [this.state.lat, this.state.lng];
       var colour = scale.scaleSequential().domain([0, this.state.maxCases]).interpolator(colourscale.interpolateTurbo);
-
-      if (!(Object.keys(this.state.postcodes).length === 0 && this.state.postcodes.constructor === Object)) {
-        if (this.state.cases) {
-          var _React$createElement;
-
-          return /*#__PURE__*/React.createElement(LeafletMap, {
-            center: position,
-            zoom: this.state.zoom
-          }, /*#__PURE__*/React.createElement(TileLayer, (_React$createElement = {
-            attribution: "\xA9 <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, \xA9 <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> \xA9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors" // url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
-            // attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            // url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-
-          }, _defineProperty(_React$createElement, "attribution", "\xA9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, \xA9 <a href=\"https://carto.com/attribution/\">CARTO</a>"), _defineProperty(_React$createElement, "url", "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"), _React$createElement)), /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
-            data: this.state.postcodes,
-            style: function style(feature) {
-              console.log(feature);
-              return {
-                color: 'black',
-                opacity: 0.3,
-                fillColor: colour(feature.properties.cvCases.length),
-                weight: 1,
-                fillOpacity: 0.5
-              };
-            }
-          }), /*#__PURE__*/React.createElement(Marker, {
-            position: position
-          }, /*#__PURE__*/React.createElement(Popup, null, "A pretty CSS3 popup. ", /*#__PURE__*/React.createElement("br", null), " Easily customizable.")));
-        } else {
-          return /*#__PURE__*/React.createElement("div", null, "waiting on case data");
-        }
-      } else {
-        return /*#__PURE__*/React.createElement("div", null, "waiting on post code area data");
-      }
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(LeafletMap, {
+        center: position,
+        zoom: this.state.zoom
+      }, /*#__PURE__*/React.createElement(TileLayer, {
+        attribution: "\xA9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, \xA9 <a href=\"https://carto.com/attribution/\">CARTO</a>",
+        url: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+      }), /*#__PURE__*/React.createElement(NSW, {
+        colour: colour,
+        setMax: this.setMax
+      })));
     }
   }]);
 
