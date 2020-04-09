@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "dev-server": "npx nodemon app/server.js",
-    "dev-front": "webpack --config webpack.dev.js"
+    "dev-front": "webpack --config webpack.dev.js",
+    "start": "node app/server.js"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
