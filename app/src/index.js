@@ -13,42 +13,118 @@ import './style.css';
 
 class VIC extends React.Component {
     constructor(props) {
-        supper(props)
+        super(props)
         this.state = {
             updated: false,
-            map = {}
+            map: {}
         }
+        this.mapFromServer = this.mapFromServer.bind(this)
+        this.COVIDFromServer = this.COVIDFromServer.bind(this)
+        this.getCOVIDNumbers = this.getCOVIDNumbers.bind(this)
+        this.getServerUpdate = this.getServerUpdate.bind(this)
+        this.onEachFeature = this.onEachFeature.bind(this)
     }
 
     mapFromServer() {
-        console.log("sending request for VIC LGA's map")
+        // console.log("sending request for VIC LGA's map")
         return $.getJSON(window.location.origin + '/maps', {state:'vic'})
     }
 
     COVIDFromServer() {
-        console.log('time to get COVID numbers')
-        return $.getJSON('/getCOVIDdata',{state:'vic'})
+        // console.log('getting covid numbers for VIC')
+        return $.getJSON('/getCOVIDdata', {state:'vic'})
     }
 
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
             this.props.setMax(data)
-            
+            // console.log(data)
 
             let geos = this.state.map
-            geos.objects.NSW_PC_100pc_TOPO.geometries.forEach(area => {
-                if(data[area.properties.POA_CODE16]) {
-                    area.properties['cvCases'] = data[area.properties.POA_CODE16]
+            geos.objects.VIC_LGA_100pc_TOPO.geometries.forEach(area => {
+                if(data[area.properties.LGA_NAME19]) {
+                    area.properties['cvCases'] = data[area.properties.LGA_NAME19]
                 } else {
-                    area.properties['cvCases'] = []
+                    area.properties['cvCases'] = 0
                 }
             })
 
+            // console.log(geos)
             this.setState({
                 updated: true,
                 map: geos,
             })
         })
+    }
+
+    getServerUpdate() {
+        // console.log('getPostalAreas')
+        this.mapFromServer().then((data) => {
+            // console.log(data)
+            this.setState({
+                map: data
+            })
+            this.getCOVIDNumbers()
+        })
+    }
+
+    highlightFeature(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.85
+        });
+    }
+    
+    resetHighlight(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.3
+        });
+    }
+    
+    onEachFeature(feature, layer){
+        const popupContent = 
+        `<Popup>
+        LGA Name: ${feature.properties.LGA_NAME19}<br/>
+        Total cases: ${feature.properties.cvCases.toString()}<br/>
+        </Popup>`
+        
+        layer.bindPopup(popupContent)
+        layer.on({
+            mouseover: this.highlightFeature,
+            mouseout: this.resetHighlight
+        });
+    }
+
+    componentDidMount() {
+        this.getServerUpdate()
+    }
+
+    render() {
+        if (this.state.updated) {
+            return (
+                <TopoJSON
+                data = {this.state.map}
+                style = {(feature) => {
+                    // console.log(feature)
+                    return {
+                        color: 'black',
+                        opacity: 1,
+                        fillColor: this.props.colour(feature.properties.cvCases),
+                        weight: 1,
+                        fillOpacity: 0.3
+                    }
+                }}
+                onEachFeature = {this.onEachFeature}
+                />
+            )
+        } else {
+            return (
+                <div>Waiting on post code and case data for VIC</div>
+            )
+        }
     }
 }
 
@@ -69,18 +145,18 @@ class NSW extends React.Component {
     }
 
     mapFromServer() {
-        console.log('sending request for NSW postcode areas')
+        // console.log('sending request for NSW postcode map')
         return $.getJSON(window.location.origin + '/maps', {state:'nsw'})
     }
 
     COVIDFromServer() {
-        console.log('time to get COVID numbers')
-        return $.getJSON('/getCOVIDdata',{state:'nsw'})
+        // console.log('time to get COVID numbers for NSW')
+        return $.getJSON('/getCOVIDdata', {state:'nsw'})
     }
 
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
-            console.log(data)
+            // console.log(data)
             this.props.setMax(data)
             
 
@@ -89,7 +165,7 @@ class NSW extends React.Component {
                 if(data[area.properties.POA_CODE16]) {
                     area.properties['cvCases'] = data[area.properties.POA_CODE16]
                 } else {
-                    area.properties['cvCases'] = []
+                    area.properties['cvCases'] = 0
                 }
             })
 
@@ -101,9 +177,9 @@ class NSW extends React.Component {
     }
 
     getPostalAreas() {
-        console.log('getPostalAreas')
+        // console.log('getPostalAreas')
         this.mapFromServer().then((data) => {
-            console.log(data)
+            // console.log(data)
             this.setState({
                 map: data
             })
@@ -135,7 +211,7 @@ class NSW extends React.Component {
         const popupContent = 
         `<Popup>
         Postcode: ${feature.properties.POA_CODE16}<br/>
-        Total cases: ${feature.properties.cvCases.length}<br/>
+        Total cases: ${feature.properties.cvCases.toString()}<br/>
         </Popup>`
         
         layer.bindPopup(popupContent)
@@ -146,7 +222,7 @@ class NSW extends React.Component {
     }
 
     render() {
-        if (!(Object.keys(this.state.map).length === 0 && this.state.map.constructor === Object)) {
+        if (this.state.updated) {
             return (
                 <TopoJSON
                 data = {this.state.map}
@@ -155,7 +231,7 @@ class NSW extends React.Component {
                     return {
                         color: 'black',
                         opacity: 1,
-                        fillColor: this.props.colour(feature.properties.cvCases.length),
+                        fillColor: this.props.colour(feature.properties.cvCases),
                         weight: 1,
                         fillOpacity: 0.3
                     }
@@ -177,7 +253,7 @@ class App extends React.Component {
         this.state = {
             lat: -33.8567891,
             lng: 151.2151911,
-            zoom: 11,
+            zoom: 6,
             maxCases: 0,
         }
         this.setMax = this.setMax.bind(this)
@@ -187,8 +263,8 @@ class App extends React.Component {
         let currentMax = this.state.maxCases
         
         for (const x in data) {
-            if(data[x].length > currentMax) {
-                currentMax = data[x].length
+            if(data[x] > currentMax) {
+                currentMax = data[x]
             }
         }
 
@@ -208,6 +284,10 @@ class App extends React.Component {
                     url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
                     />
                     <NSW
+                        colour = {colour}
+                        setMax = {this.setMax}
+                    />
+                    <VIC
                         colour = {colour}
                         setMax = {this.setMax}
                     />

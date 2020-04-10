@@ -3,7 +3,7 @@ const bodyParser    = require('body-parser');
 const path          = require('path');
 const request       = require('request')
 const NSWpostcodes  = require('./geojson/NSW_PC_100pc_TOPO.json')
-const VICLGAs       = require('')
+const VICLGAs       = require('./geojson/VIC_LGA_100pc_TOPO.json')
 
 require('dotenv').config() //so we can make use of .env files
 
@@ -20,39 +20,65 @@ app.get('/', (req, res) => {
 })
 
 app.get('/maps', (req, res) => {
-  console.log(req.query)
+  // console.log(req.query)
   switch(req.query.state){
     case 'nsw':
-      console.log('sending nsw map')
+      // console.log('sending nsw map')
       res.json(NSWpostcodes)
+      break;
     case 'vic':
-      console.log('sending nsw map')
-      res.json(NSWpostcodes)
+      // console.log('sending vic map')
+      res.json(VICLGAs)
+      break;
   }
 })
 
 app.get('/getCOVIDdata', function (req, res) {
-  request('https://data.nsw.gov.au/data/api/3/action/datastore_search?resource_id=21304414-1ff1-4243-a5d2-f52778048b29&limit=100000000', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      let resJSON = JSON.parse(body)
-      let caseData = {}
+  // console.log(req.query.state)
+  switch(req.query.state){
+    case 'nsw':
+      request('https://data.nsw.gov.au/data/api/3/action/datastore_search?resource_id=21304414-1ff1-4243-a5d2-f52778048b29&limit=100000000', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let resJSON = JSON.parse(body)
+          let caseData = {}
 
-      resJSON.result.records.forEach(cvCase => {
-        if(cvCase.postcode===0 || cvCase.postcode===null) return;
-        if(!caseData.hasOwnProperty(cvCase.postcode)) {
-          caseData[cvCase.postcode] = [cvCase.notification_date]
-        } else if(caseData.hasOwnProperty(cvCase.postcode)) {
-          caseData[cvCase.postcode].push(cvCase.notification_date)
+          resJSON.result.records.forEach(cvCase => {
+            if(cvCase.postcode===0 || cvCase.postcode===null) return;
+            if(!caseData.hasOwnProperty(cvCase.postcode)) {
+              caseData[cvCase.postcode] = 1
+            } else if(caseData.hasOwnProperty(cvCase.postcode)) {
+              caseData[cvCase.postcode] += 1
+            }
+          })
+
+          res.json(caseData)
+        }
+        if (error) {
+          console.log(error)
         }
       })
+      break;
+    case 'vic':
+      request('https://interactive.guim.co.uk/covidfeeds/victoria.json', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let resJSON = JSON.parse(body)
+          let caseData = {}
 
-      res.json(caseData)
-    }
-    if (error) {
-      console.log(error)
-    }
-  })
-});
+          resJSON.forEach(area => {
+            caseData[area.place] = area.count
+          })
+
+          // console.log(caseData)
+          res.json(caseData)
+        }
+        if (error) {
+          console.log(error)
+        }
+      })
+      break;
+  }
+})
+  
 
 var listener = app.listen(process.env.PORT||3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
