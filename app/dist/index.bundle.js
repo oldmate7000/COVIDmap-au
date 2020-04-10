@@ -66497,8 +66497,8 @@ var VIC = /*#__PURE__*/function (_React$Component) {
           style: function style(feature) {
             // console.log(feature)
             return {
-              color: 'black',
-              opacity: 1,
+              color: _this4.props.colour(feature.properties.cvCases),
+              opacity: 0.5,
               fillColor: _this4.props.colour(feature.properties.cvCases),
               weight: 1,
               fillOpacity: 0.3
@@ -66636,8 +66636,8 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
           style: function style(feature) {
             // console.log(feature)
             return {
-              color: 'black',
-              opacity: 1,
+              color: _this8.props.colour(feature.properties.cvCases),
+              opacity: 0.5,
               fillColor: _this8.props.colour(feature.properties.cvCases),
               weight: 1,
               fillOpacity: 0.3
@@ -66666,9 +66666,9 @@ var App = /*#__PURE__*/function (_React$Component3) {
 
     _this9 = _super3.call(this, props);
     _this9.state = {
-      lat: -33.8567891,
-      lng: 151.2151911,
-      zoom: 6,
+      lat: -27.5977572,
+      lng: 134.4407826,
+      zoom: 5,
       maxCases: 0
     };
     _this9.setMax = _this9.setMax.bind(_assertThisInitialized(_this9));

@@ -110,8 +110,8 @@ class VIC extends React.Component {
                 style = {(feature) => {
                     // console.log(feature)
                     return {
-                        color: 'black',
-                        opacity: 1,
+                        color: this.props.colour(feature.properties.cvCases),
+                        opacity: 0.5,
                         fillColor: this.props.colour(feature.properties.cvCases),
                         weight: 1,
                         fillOpacity: 0.3
@@ -229,8 +229,8 @@ class NSW extends React.Component {
                 style = {(feature) => {
                     // console.log(feature)
                     return {
-                        color: 'black',
-                        opacity: 1,
+                        color: this.props.colour(feature.properties.cvCases),
+                        opacity: 0.5,
                         fillColor: this.props.colour(feature.properties.cvCases),
                         weight: 1,
                         fillOpacity: 0.3
@@ -251,9 +251,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            lat: -33.8567891,
-            lng: 151.2151911,
-            zoom: 6,
+            lat: -27.5977572,
+            lng: 134.4407826,
+            zoom: 5,
             maxCases: 0,
         }
         this.setMax = this.setMax.bind(this)
