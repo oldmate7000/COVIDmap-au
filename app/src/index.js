@@ -11,6 +11,46 @@ import './style.css';
 // import { Control } from 'leaflet';
 // import { gridLayer } from 'leaflet';
 
+class VIC extends React.Component {
+    constructor(props) {
+        supper(props)
+        this.state = {
+            updated: false,
+            map = {}
+        }
+    }
+
+    mapFromServer() {
+        console.log("sending request for VIC LGA's map")
+        return $.getJSON(window.location.origin + '/maps', {state:'vic'})
+    }
+
+    COVIDFromServer() {
+        console.log('time to get COVID numbers')
+        return $.getJSON('/getCOVIDdata',{state:'vic'})
+    }
+
+    getCOVIDNumbers() {
+        this.COVIDFromServer().then((data) => {
+            this.props.setMax(data)
+            
+
+            let geos = this.state.map
+            geos.objects.NSW_PC_100pc_TOPO.geometries.forEach(area => {
+                if(data[area.properties.POA_CODE16]) {
+                    area.properties['cvCases'] = data[area.properties.POA_CODE16]
+                } else {
+                    area.properties['cvCases'] = []
+                }
+            })
+
+            this.setState({
+                updated: true,
+                map: geos,
+            })
+        })
+    }
+}
 
 class NSW extends React.Component {
     constructor(props) {
@@ -29,8 +69,8 @@ class NSW extends React.Component {
     }
 
     mapFromServer() {
-        console.log('sending request for post code areas')
-        return $.getJSON(window.location.origin + '/postcodes', {state:'nsw'})
+        console.log('sending request for NSW postcode areas')
+        return $.getJSON(window.location.origin + '/maps', {state:'nsw'})
     }
 
     COVIDFromServer() {
@@ -40,10 +80,11 @@ class NSW extends React.Component {
 
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
+            console.log(data)
             this.props.setMax(data)
             
 
-            let geos = this.state.postcodes
+            let geos = this.state.map
             geos.objects.NSW_PC_100pc_TOPO.geometries.forEach(area => {
                 if(data[area.properties.POA_CODE16]) {
                     area.properties['cvCases'] = data[area.properties.POA_CODE16]
@@ -64,7 +105,7 @@ class NSW extends React.Component {
         this.mapFromServer().then((data) => {
             console.log(data)
             this.setState({
-                postcodes: data
+                map: data
             })
         })
     }
