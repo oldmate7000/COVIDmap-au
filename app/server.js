@@ -93,7 +93,7 @@ app.get('/getCOVIDdata', function (req, res) {
           // console.log(resJSON)
 
           resJSON.forEach(area => {
-            caseData[area.place] = parseInt(area.count)
+            caseData[area.place.split('\n ').join('')] = parseInt(area.count)
           })
 
           delete caseData.Total

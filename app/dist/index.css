@@ -1,4 +1,4 @@
-* {
+body {
   margin: 0;
   padding: 0;
 }
@@ -8,10 +8,29 @@
   width: 100%;
 }
 
-#infobox {
-  position: fixed;
-  background-color: beige;
+.loadinginfo {
+  background-color: black;
+  color: white;
   padding: 5px;
-  border-radius: 2px;
-  z-index: 100000
+  border-radius: 5px;
+}
+
+#legend {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+#legend img {
+  height: 15vh;
+  width: 100%;
+}
+
+#legend h1 {
+  margin: 0;
+  padding: 0;
 }

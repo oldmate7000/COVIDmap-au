@@ -59352,6 +59352,101 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "../node_modules/react-leaflet-control/dist/control.js":
+/*!*************************************************************!*\
+  !*** ../node_modules/react-leaflet-control/dist/control.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _reactDom = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactLeaflet = __webpack_require__(/*! react-leaflet */ "../node_modules/react-leaflet/es/index.js");
+
+var _leaflet = __webpack_require__(/*! leaflet */ "../node_modules/leaflet/dist/leaflet-src.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DumbControl = _leaflet.Control.extend({
+  options: {
+    className: "",
+    onOff: "",
+    handleOff: function noop() {}
+  },
+
+  onAdd: function onAdd() /* map */{
+    var _controlDiv = _leaflet.DomUtil.create("div", this.options.className);
+    _leaflet.DomEvent.disableClickPropagation(_controlDiv);
+    return _controlDiv;
+  },
+  onRemove: function onRemove(map) {
+    if (this.options.onOff) {
+      map.off(this.options.onOff, this.options.handleOff, this);
+    }
+
+    return this;
+  }
+});
+
+exports.default = (0, _reactLeaflet.withLeaflet)(function (_MapControl) {
+  _inherits(LeafletControl, _MapControl);
+
+  function LeafletControl() {
+    _classCallCheck(this, LeafletControl);
+
+    return _possibleConstructorReturn(this, (LeafletControl.__proto__ || Object.getPrototypeOf(LeafletControl)).apply(this, arguments));
+  }
+
+  _createClass(LeafletControl, [{
+    key: "createLeafletElement",
+    value: function createLeafletElement(props) {
+      return new DumbControl(Object.assign({}, props));
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      _get(LeafletControl.prototype.__proto__ || Object.getPrototypeOf(LeafletControl.prototype), "componentDidMount", this).call(this);
+
+      // This is needed because the control is only attached to the map in
+      // MapControl's componentDidMount, so the container is not available
+      // until this is called. We need to now force a render so that the
+      // portal and children are actually rendered.
+      this.forceUpdate();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (!this.leafletElement || !this.leafletElement.getContainer()) {
+        return null;
+      }
+      return _reactDom2.default.createPortal(this.props.children, this.leafletElement.getContainer());
+    }
+  }]);
+
+  return LeafletControl;
+}(_reactLeaflet.MapControl));
+
+/***/ }),
+
 /***/ "../node_modules/react-leaflet/es/AttributionControl.js":
 /*!**************************************************************!*\
   !*** ../node_modules/react-leaflet/es/AttributionControl.js ***!
@@ -66330,9 +66425,11 @@ function TopoJSON(props) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _TopoJSON__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TopoJSON */ "./src/TopoJSON.js");
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_leaflet_control__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-leaflet-control */ "../node_modules/react-leaflet-control/dist/control.js");
+/* harmony import */ var react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TopoJSON__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TopoJSON */ "./src/TopoJSON.js");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66363,9 +66460,9 @@ var ReactLeaflet = __webpack_require__(/*! react-leaflet */ "../node_modules/rea
 
 var LeafletMap = ReactLeaflet.Map,
     TileLayer = ReactLeaflet.TileLayer,
-    Control = ReactLeaflet.Control,
     Marker = ReactLeaflet.Marker,
     Popup = ReactLeaflet.Popup;
+
 
 var $ = __webpack_require__(/*! jquery */ "../node_modules/jquery/dist/jquery.js");
 
@@ -66422,9 +66519,9 @@ var WA = /*#__PURE__*/function (_React$Component) {
       var _this2 = this;
 
       this.COVIDFromServer().then(function (data) {
-        _this2.props.setMax(data);
+        _this2.props.setMax(data); // console.log(data)
 
-        console.log(data);
+
         var geos = _this2.state.map;
         geos.objects.WA_LGA_100pc_TOPO.geometries.forEach(function (area) {
           if (data[area.properties.LGA_NAME19]) {
@@ -66491,23 +66588,31 @@ var WA = /*#__PURE__*/function (_React$Component) {
     value: function render() {
       var _this4 = this;
 
-      if (this.state.updated) {
-        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
-          data: this.state.map,
-          style: function style(feature) {
-            // console.log(feature)
-            return {
-              color: _this4.props.colour(feature.properties.cvCases),
-              opacity: 0.5,
-              fillColor: _this4.props.colour(feature.properties.cvCases),
-              weight: 1,
-              fillOpacity: 0.3
-            };
-          },
-          onEachFeature: this.onEachFeature
-        });
+      if (this.props.displaystate) {
+        if (this.state.updated) {
+          return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            data: this.state.map,
+            style: function style(feature) {
+              // console.log(feature)
+              return {
+                color: _this4.props.colour(feature.properties.cvCases),
+                opacity: 0.5,
+                fillColor: _this4.props.colour(feature.properties.cvCases),
+                weight: 1,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: this.onEachFeature
+          });
+        } else {
+          return /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+            position: "topleft"
+          }, /*#__PURE__*/React.createElement("div", {
+            "class": "loadinginfo"
+          }, "Loading in map and case data for Western Australia"));
+        }
       } else {
-        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for WA");
+        return null;
       }
     }
   }]);
@@ -66560,9 +66665,9 @@ var QLD = /*#__PURE__*/function (_React$Component2) {
       var _this6 = this;
 
       this.COVIDFromServer().then(function (data) {
-        _this6.props.setMax(data);
+        _this6.props.setMax(data); // console.log(data)
 
-        console.log(data);
+
         var geos = _this6.state.map;
         geos.objects.HHS_2014.geometries.forEach(function (area) {
           if (data[area.properties.HHS]) {
@@ -66630,23 +66735,31 @@ var QLD = /*#__PURE__*/function (_React$Component2) {
     value: function render() {
       var _this8 = this;
 
-      if (this.state.updated) {
-        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
-          data: this.state.map,
-          style: function style(feature) {
-            // console.log(feature)
-            return {
-              color: _this8.props.colour(feature.properties.cvCases),
-              opacity: 0.5,
-              fillColor: _this8.props.colour(feature.properties.cvCases),
-              weight: 1,
-              fillOpacity: 0.3
-            };
-          },
-          onEachFeature: this.onEachFeature
-        });
+      if (this.props.displaystate) {
+        if (this.state.updated) {
+          return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            data: this.state.map,
+            style: function style(feature) {
+              // console.log(feature)
+              return {
+                color: _this8.props.colour(feature.properties.cvCases),
+                opacity: 0.5,
+                fillColor: _this8.props.colour(feature.properties.cvCases),
+                weight: 1,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: this.onEachFeature
+          });
+        } else {
+          return /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+            position: "topleft"
+          }, /*#__PURE__*/React.createElement("div", {
+            "class": "loadinginfo"
+          }, "Loading in map and case data for Queensland"));
+        }
       } else {
-        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for QLD");
+        return null;
       }
     }
   }]);
@@ -66768,23 +66881,31 @@ var VIC = /*#__PURE__*/function (_React$Component3) {
     value: function render() {
       var _this12 = this;
 
-      if (this.state.updated) {
-        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
-          data: this.state.map,
-          style: function style(feature) {
-            // console.log(feature)
-            return {
-              color: _this12.props.colour(feature.properties.cvCases),
-              opacity: 0.5,
-              fillColor: _this12.props.colour(feature.properties.cvCases),
-              weight: 1,
-              fillOpacity: 0.3
-            };
-          },
-          onEachFeature: this.onEachFeature
-        });
+      if (this.props.displaystate) {
+        if (this.state.updated) {
+          return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            data: this.state.map,
+            style: function style(feature) {
+              // console.log(feature)
+              return {
+                color: _this12.props.colour(feature.properties.cvCases),
+                opacity: 0.5,
+                fillColor: _this12.props.colour(feature.properties.cvCases),
+                weight: 1,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: this.onEachFeature
+          });
+        } else {
+          return /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+            position: "topleft"
+          }, /*#__PURE__*/React.createElement("div", {
+            "class": "loadinginfo"
+          }, "Loading in map and case data for Victoria"));
+        }
       } else {
-        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for VIC");
+        return null;
       }
     }
   }]);
@@ -66907,23 +67028,31 @@ var NSW = /*#__PURE__*/function (_React$Component4) {
     value: function render() {
       var _this16 = this;
 
-      if (this.state.updated) {
-        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
-          data: this.state.map,
-          style: function style(feature) {
-            // console.log(feature)
-            return {
-              color: _this16.props.colour(feature.properties.cvCases),
-              opacity: 0.5,
-              fillColor: _this16.props.colour(feature.properties.cvCases),
-              weight: 1,
-              fillOpacity: 0.3
-            };
-          },
-          onEachFeature: this.onEachFeature
-        });
+      if (this.props.displaystate) {
+        if (this.state.updated) {
+          return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_1__["default"], {
+            data: this.state.map,
+            style: function style(feature) {
+              // console.log(feature)
+              return {
+                color: _this16.props.colour(feature.properties.cvCases),
+                opacity: 0.5,
+                fillColor: _this16.props.colour(feature.properties.cvCases),
+                weight: 1,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: this.onEachFeature
+          });
+        } else {
+          return /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+            position: "topleft"
+          }, /*#__PURE__*/React.createElement("div", {
+            "class": "loadinginfo"
+          }, "Loading in map and case data for New South Wales"));
+        }
       } else {
-        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for NSW");
+        return null;
       }
     }
   }]);
@@ -66946,9 +67075,15 @@ var App = /*#__PURE__*/function (_React$Component5) {
       lat: -27.5977572,
       lng: 134.4407826,
       zoom: 5,
-      maxCases: 0
+      maxCases: 0,
+      displayNSW: true,
+      displayQLD: true,
+      displayVIC: true,
+      displayWA: true
     };
     _this17.setMax = _this17.setMax.bind(_assertThisInitialized(_this17));
+    _this17.moveend = _this17.moveend.bind(_assertThisInitialized(_this17));
+    _this17.switchdisplay = _this17.switchdisplay.bind(_assertThisInitialized(_this17));
     return _this17;
   }
 
@@ -66968,29 +67103,141 @@ var App = /*#__PURE__*/function (_React$Component5) {
       });
     }
   }, {
+    key: "moveend",
+    value: function moveend(e) {
+      this.setState({
+        lat: e.target.getCenter().lat,
+        lng: e.target.getCenter().lng,
+        zoom: e.target.getZoom()
+      });
+    }
+  }, {
+    key: "switchdisplay",
+    value: function switchdisplay(e) {
+      switch (e.target.value) {
+        case 'nsw':
+          this.setState(function (state) {
+            return {
+              displayNSW: !state.displayNSW
+            };
+          });
+          break;
+
+        case 'vic':
+          this.setState(function (state) {
+            return {
+              displayVIC: !state.displayVIC
+            };
+          });
+          break;
+
+        case 'qld':
+          this.setState(function (state) {
+            return {
+              displayQLD: !state.displayQLD
+            };
+          });
+          break;
+
+        case 'wa':
+          this.setState(function (state) {
+            return {
+              displayWA: !state.displayWA
+            };
+          });
+          break;
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      var position = [this.state.lat, this.state.lng];
+      var _this18 = this;
+
       var colour = scale.scaleSequential().domain([0, this.state.maxCases]).interpolator(colourscale.interpolateTurbo);
       return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(LeafletMap, {
-        center: position,
-        zoom: this.state.zoom
+        center: [this.state.lat, this.state.lng],
+        zoom: this.state.zoom,
+        onmoveend: this.moveend
       }, /*#__PURE__*/React.createElement(TileLayer, {
         attribution: "\xA9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, \xA9 <a href=\"https://carto.com/attribution/\">CARTO</a>",
         url: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
       }), /*#__PURE__*/React.createElement(NSW, {
         colour: colour,
-        setMax: this.setMax
+        setMax: this.setMax,
+        displaystate: this.state.displayNSW
       }), /*#__PURE__*/React.createElement(VIC, {
         colour: colour,
-        setMax: this.setMax
+        setMax: this.setMax,
+        displaystate: this.state.displayVIC
       }), /*#__PURE__*/React.createElement(QLD, {
         colour: colour,
-        setMax: this.setMax
+        setMax: this.setMax,
+        displaystate: this.state.displayQLD
       }), /*#__PURE__*/React.createElement(WA, {
         colour: colour,
-        setMax: this.setMax
-      })));
+        setMax: this.setMax,
+        displaystate: this.state.displayWA
+      }), /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+        position: "bottomleft"
+      }, /*#__PURE__*/React.createElement("div", {
+        id: "legend"
+      }, /*#__PURE__*/React.createElement("h1", null, "0"), /*#__PURE__*/React.createElement("img", {
+        src: "/assets/turboscale.png"
+      }), /*#__PURE__*/React.createElement("h1", null, this.state.maxCases))), /*#__PURE__*/React.createElement(react_leaflet_control__WEBPACK_IMPORTED_MODULE_0___default.a, {
+        position: "bottomright"
+      }, /*#__PURE__*/React.createElement("div", null, "Currently centered on: ", this.state.lat, ", ", this.state.lng, ", and at zoom level: ", this.state.zoom), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          _this18.setState({
+            lat: -37.905741263083954,
+            lng: 145.10879516601565,
+            zoom: 10
+          });
+        }
+      }, "Melbourne"), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          _this18.setState({
+            lat: -33.83420513593713,
+            lng: 151.14646911621097,
+            zoom: 11
+          });
+        }
+      }, "Sydney"), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          _this18.setState({
+            lat: -27.548459140257656,
+            lng: 153.18786621093753,
+            zoom: 9
+          });
+        }
+      }, "Brisbane"), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          _this18.setState({
+            lat: -31.962939927942937,
+            lng: 115.87348937988283,
+            zoom: 11
+          });
+        }
+      }, "Perth"), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          _this18.setState({
+            lat: -27.5977572,
+            lng: 134.4407826,
+            zoom: 5
+          });
+        }
+      }, "Australia"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("button", {
+        onClick: this.switchdisplay,
+        value: "nsw"
+      }, "Toggle NSW"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.switchdisplay,
+        value: "qld"
+      }, "Toggle QLD"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.switchdisplay,
+        value: "vic"
+      }, "Toggle VIC"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.switchdisplay,
+        value: "wa"
+      }, "Toggle WA"))));
     }
   }]);
 

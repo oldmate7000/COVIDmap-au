@@ -1,7 +1,9 @@
 const React = require('react')
 const ReactDOM = require('react-dom');
 const ReactLeaflet = require('react-leaflet')
-const { Map: LeafletMap, TileLayer, Control, Marker, Popup } = ReactLeaflet
+const { Map: LeafletMap, TileLayer, Marker, Popup } = ReactLeaflet
+import Control from 'react-leaflet-control';
+
 const $ = require('jquery')
 const scale = require('d3-scale')
 const colourscale = require ('d3-scale-chromatic')
@@ -38,7 +40,7 @@ class WA extends React.Component {
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
             this.props.setMax(data)
-            console.log(data)
+            // console.log(data)
 
             let geos = this.state.map
             geos.objects.WA_LGA_100pc_TOPO.geometries.forEach(area => {
@@ -103,27 +105,33 @@ class WA extends React.Component {
     }
 
     render() {
-        if (this.state.updated) {
-            return (
-                <TopoJSON
-                data = {this.state.map}
-                style = {(feature) => {
-                    // console.log(feature)
-                    return {
-                        color: this.props.colour(feature.properties.cvCases),
-                        opacity: 0.5,
-                        fillColor: this.props.colour(feature.properties.cvCases),
-                        weight: 1,
-                        fillOpacity: 0.3
-                    }
-                }}
-                onEachFeature = {this.onEachFeature}
-                />
-            )
+        if(this.props.displaystate) {
+            if (this.state.updated) {
+                return (
+                    <TopoJSON
+                    data = {this.state.map}
+                    style = {(feature) => {
+                        // console.log(feature)
+                        return {
+                            color: this.props.colour(feature.properties.cvCases),
+                            opacity: 0.5,
+                            fillColor: this.props.colour(feature.properties.cvCases),
+                            weight: 1,
+                            fillOpacity: 0.3
+                        }
+                    }}
+                    onEachFeature = {this.onEachFeature}
+                    />
+                )
+            } else {
+                return (
+                    <Control position="topleft" >
+                        <div class="loadinginfo">Loading in map and case data for Western Australia</div>
+                    </Control>
+                )
+            }
         } else {
-            return (
-                <div>Waiting on post code and case data for WA</div>
-            )
+            return null
         }
     }
 }
@@ -155,7 +163,7 @@ class QLD extends React.Component {
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
             this.props.setMax(data)
-            console.log(data)
+            // console.log(data)
 
             let geos = this.state.map
             geos.objects.HHS_2014.geometries.forEach(area => {
@@ -220,28 +228,35 @@ class QLD extends React.Component {
     }
 
     render() {
-        if (this.state.updated) {
-            return (
-                <TopoJSON
-                data = {this.state.map}
-                style = {(feature) => {
-                    // console.log(feature)
-                    return {
-                        color: this.props.colour(feature.properties.cvCases),
-                        opacity: 0.5,
-                        fillColor: this.props.colour(feature.properties.cvCases),
-                        weight: 1,
-                        fillOpacity: 0.3
-                    }
-                }}
-                onEachFeature = {this.onEachFeature}
-                />
-            )
+        if (this.props.displaystate) {
+            if (this.state.updated) {
+                return (
+                    <TopoJSON
+                    data = {this.state.map}
+                    style = {(feature) => {
+                        // console.log(feature)
+                        return {
+                            color: this.props.colour(feature.properties.cvCases),
+                            opacity: 0.5,
+                            fillColor: this.props.colour(feature.properties.cvCases),
+                            weight: 1,
+                            fillOpacity: 0.3
+                        }
+                    }}
+                    onEachFeature = {this.onEachFeature}
+                    />
+                )
+            } else {
+                return (
+                    <Control position="topleft" >
+                        <div class="loadinginfo">Loading in map and case data for Queensland</div>
+                    </Control>
+                )
+            }
         } else {
-            return (
-                <div>Waiting on post code and case data for QLD</div>
-            )
+            return null
         }
+
     }
 }
 
@@ -337,28 +352,35 @@ class VIC extends React.Component {
     }
 
     render() {
-        if (this.state.updated) {
-            return (
-                <TopoJSON
-                data = {this.state.map}
-                style = {(feature) => {
-                    // console.log(feature)
-                    return {
-                        color: this.props.colour(feature.properties.cvCases),
-                        opacity: 0.5,
-                        fillColor: this.props.colour(feature.properties.cvCases),
-                        weight: 1,
-                        fillOpacity: 0.3
-                    }
-                }}
-                onEachFeature = {this.onEachFeature}
-                />
-            )
+        if (this.props.displaystate) {
+            if (this.state.updated) {
+                return (
+                    <TopoJSON
+                    data = {this.state.map}
+                    style = {(feature) => {
+                        // console.log(feature)
+                        return {
+                            color: this.props.colour(feature.properties.cvCases),
+                            opacity: 0.5,
+                            fillColor: this.props.colour(feature.properties.cvCases),
+                            weight: 1,
+                            fillOpacity: 0.3
+                        }
+                    }}
+                    onEachFeature = {this.onEachFeature}
+                    />
+                )
+            } else {
+                return (
+                    <Control position="topleft" >
+                        <div class="loadinginfo">Loading in map and case data for Victoria</div>
+                    </Control>
+                )
+            }
         } else {
-            return (
-                <div>Waiting on post code and case data for VIC</div>
-            )
+            return null
         }
+
     }
 }
 
@@ -456,28 +478,35 @@ class NSW extends React.Component {
     }
 
     render() {
-        if (this.state.updated) {
-            return (
-                <TopoJSON
-                data = {this.state.map}
-                style = {(feature) => {
-                    // console.log(feature)
-                    return {
-                        color: this.props.colour(feature.properties.cvCases),
-                        opacity: 0.5,
-                        fillColor: this.props.colour(feature.properties.cvCases),
-                        weight: 1,
-                        fillOpacity: 0.3
-                    }
-                }}
-                onEachFeature = {this.onEachFeature}
-                />
-            )
+        if(this.props.displaystate) {
+            if (this.state.updated) {
+                return (
+                    <TopoJSON
+                    data = {this.state.map}
+                    style = {(feature) => {
+                        // console.log(feature)
+                        return {
+                            color: this.props.colour(feature.properties.cvCases),
+                            opacity: 0.5,
+                            fillColor: this.props.colour(feature.properties.cvCases),
+                            weight: 1,
+                            fillOpacity: 0.3
+                        }
+                    }}
+                    onEachFeature = {this.onEachFeature}
+                    />
+                )
+            } else {
+                return (
+                    <Control position="topleft" >
+                        <div class="loadinginfo">Loading in map and case data for New South Wales</div>
+                    </Control>
+                )
+            }
         } else {
-            return (
-                <div>Waiting on post code and case data for NSW</div>
-            )
+            return null
         }
+        
     }
 }
 
@@ -489,8 +518,14 @@ class App extends React.Component {
             lng: 134.4407826,
             zoom: 5,
             maxCases: 0,
+            displayNSW: true,
+            displayQLD: true,
+            displayVIC: true,
+            displayWA: true,
         }
         this.setMax = this.setMax.bind(this)
+        this.moveend = this.moveend.bind(this)
+        this.switchdisplay = this.switchdisplay.bind(this)
     }
 
     setMax(data) {
@@ -507,12 +542,48 @@ class App extends React.Component {
         })
     }
 
+    moveend(e) {
+        this.setState({
+            lat: e.target.getCenter().lat,
+            lng: e.target.getCenter().lng,
+            zoom: e.target.getZoom()
+        })
+    }
+
+    switchdisplay(e) {
+        switch(e.target.value) {
+            case 'nsw':
+                this.setState((state) => ({
+                    displayNSW: !(state.displayNSW)
+                }))
+                break;
+            case 'vic':
+                this.setState((state) => ({
+                    displayVIC: !(state.displayVIC)
+                }))
+                break;
+            case 'qld':
+                this.setState((state) => ({
+                    displayQLD: !(state.displayQLD)
+                }))
+                break;
+            case 'wa':
+                this.setState((state) => ({
+                    displayWA: !(state.displayWA)
+                }))
+                break;
+        }
+    }
+
     render() {
-        const position = [this.state.lat, this.state.lng];
         var colour = scale.scaleSequential().domain([0, this.state.maxCases]).interpolator(colourscale.interpolateTurbo)
         return (
             <div>
-                <LeafletMap center={position} zoom={this.state.zoom}>
+                <LeafletMap
+                center={[this.state.lat, this.state.lng]}
+                zoom={this.state.zoom}
+                onmoveend={this.moveend}
+                >
                     <TileLayer
                     attribution='&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution/">CARTO</a>'
                     url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
@@ -520,25 +591,46 @@ class App extends React.Component {
                     <NSW
                         colour = {colour}
                         setMax = {this.setMax}
+                        displaystate  = {this.state.displayNSW}
                     />
                     <VIC
                         colour = {colour}
                         setMax = {this.setMax}
+                        displaystate  = {this.state.displayVIC}
                     />
                     <QLD
                         colour = {colour}
                         setMax = {this.setMax}
+                        displaystate  = {this.state.displayQLD}
                     />
                     <WA
                         colour = {colour}
                         setMax = {this.setMax}
+                        displaystate  = {this.state.displayWA}
                     />
-                    {/* <Control
-                    position='bottom-right'
-                    /> */}
+                    <Control position='bottomleft'>
+                        <div id='legend'>
+                            <h1>0</h1>
+                            <img src='/assets/turboscale.png'/>
+                            <h1>{this.state.maxCases}</h1>
+                        </div>
+                        
+                    </Control>
+                    <Control position='bottomright'>
+                        <div>Currently centered on: {this.state.lat}, {this.state.lng}, and at zoom level: {this.state.zoom}</div>
+                        <button onClick={() => {this.setState({lat: -37.905741263083954, lng: 145.10879516601565, zoom: 10})}}>Melbourne</button>
+                        <button onClick={() => {this.setState({lat: -33.83420513593713, lng: 151.14646911621097, zoom: 11})}}>Sydney</button>
+                        <button onClick={() => {this.setState({lat: -27.548459140257656, lng: 153.18786621093753, zoom: 9})}}>Brisbane</button>
+                        <button onClick={() => {this.setState({lat: -31.962939927942937, lng: 115.87348937988283, zoom: 11})}}>Perth</button>
+                        <button onClick={() => {this.setState({lat: -27.5977572, lng: 134.4407826, zoom: 5})}}>Australia</button><br/>
+                        <button onClick={this.switchdisplay} value='nsw'>Toggle NSW</button>
+                        <button onClick={this.switchdisplay} value='qld'>Toggle QLD</button>
+                        <button onClick={this.switchdisplay} value='vic'>Toggle VIC</button>
+                        <button onClick={this.switchdisplay} value='wa'>Toggle WA</button>
+                    </Control>
                 </LeafletMap>
+
             </div>
-            
         )
     }
 }
