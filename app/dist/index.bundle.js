@@ -66377,15 +66377,15 @@ var colourscale = __webpack_require__(/*! d3-scale-chromatic */ "../node_modules
  // import { Control } from 'leaflet';
 // import { gridLayer } from 'leaflet';
 
-var VIC = /*#__PURE__*/function (_React$Component) {
-  _inherits(VIC, _React$Component);
+var WA = /*#__PURE__*/function (_React$Component) {
+  _inherits(WA, _React$Component);
 
-  var _super = _createSuper(VIC);
+  var _super = _createSuper(WA);
 
-  function VIC(props) {
+  function WA(props) {
     var _this;
 
-    _classCallCheck(this, VIC);
+    _classCallCheck(this, WA);
 
     _this = _super.call(this, props);
     _this.state = {
@@ -66400,20 +66400,20 @@ var VIC = /*#__PURE__*/function (_React$Component) {
     return _this;
   }
 
-  _createClass(VIC, [{
+  _createClass(WA, [{
     key: "mapFromServer",
     value: function mapFromServer() {
-      // console.log("sending request for VIC LGA's map")
+      // console.log("sending request for WA LGA's map")
       return $.getJSON(window.location.origin + '/maps', {
-        state: 'vic'
+        state: 'wa'
       });
     }
   }, {
     key: "COVIDFromServer",
     value: function COVIDFromServer() {
-      // console.log('getting covid numbers for VIC')
+      // console.log('getting covid numbers for WA')
       return $.getJSON('/getCOVIDdata', {
-        state: 'vic'
+        state: 'wa'
       });
     }
   }, {
@@ -66422,11 +66422,11 @@ var VIC = /*#__PURE__*/function (_React$Component) {
       var _this2 = this;
 
       this.COVIDFromServer().then(function (data) {
-        _this2.props.setMax(data); // console.log(data)
+        _this2.props.setMax(data);
 
-
+        console.log(data);
         var geos = _this2.state.map;
-        geos.objects.VIC_LGA_100pc_TOPO.geometries.forEach(function (area) {
+        geos.objects.WA_LGA_100pc_TOPO.geometries.forEach(function (area) {
           if (data[area.properties.LGA_NAME19]) {
             area.properties['cvCases'] = data[area.properties.LGA_NAME19];
           } else {
@@ -66507,23 +66507,23 @@ var VIC = /*#__PURE__*/function (_React$Component) {
           onEachFeature: this.onEachFeature
         });
       } else {
-        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for VIC");
+        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for WA");
       }
     }
   }]);
 
-  return VIC;
+  return WA;
 }(React.Component);
 
-var NSW = /*#__PURE__*/function (_React$Component2) {
-  _inherits(NSW, _React$Component2);
+var QLD = /*#__PURE__*/function (_React$Component2) {
+  _inherits(QLD, _React$Component2);
 
-  var _super2 = _createSuper(NSW);
+  var _super2 = _createSuper(QLD);
 
-  function NSW(props) {
+  function QLD(props) {
     var _this5;
 
-    _classCallCheck(this, NSW);
+    _classCallCheck(this, QLD);
 
     _this5 = _super2.call(this, props);
     _this5.state = {
@@ -66533,11 +66533,288 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
     _this5.mapFromServer = _this5.mapFromServer.bind(_assertThisInitialized(_this5));
     _this5.COVIDFromServer = _this5.COVIDFromServer.bind(_assertThisInitialized(_this5));
     _this5.getCOVIDNumbers = _this5.getCOVIDNumbers.bind(_assertThisInitialized(_this5));
-    _this5.getPostalAreas = _this5.getPostalAreas.bind(_assertThisInitialized(_this5));
+    _this5.getServerUpdate = _this5.getServerUpdate.bind(_assertThisInitialized(_this5));
     _this5.onEachFeature = _this5.onEachFeature.bind(_assertThisInitialized(_this5));
-    _this5.highlightFeature = _this5.highlightFeature.bind(_assertThisInitialized(_this5));
-    _this5.resetHighlight = _this5.resetHighlight.bind(_assertThisInitialized(_this5));
     return _this5;
+  }
+
+  _createClass(QLD, [{
+    key: "mapFromServer",
+    value: function mapFromServer() {
+      // console.log("sending request for QLD LGA's map")
+      return $.getJSON(window.location.origin + '/maps', {
+        state: 'qld'
+      });
+    }
+  }, {
+    key: "COVIDFromServer",
+    value: function COVIDFromServer() {
+      // console.log('getting covid numbers for QLD')
+      return $.getJSON('/getCOVIDdata', {
+        state: 'qld'
+      });
+    }
+  }, {
+    key: "getCOVIDNumbers",
+    value: function getCOVIDNumbers() {
+      var _this6 = this;
+
+      this.COVIDFromServer().then(function (data) {
+        _this6.props.setMax(data);
+
+        console.log(data);
+        var geos = _this6.state.map;
+        geos.objects.HHS_2014.geometries.forEach(function (area) {
+          if (data[area.properties.HHS]) {
+            area.properties['cvCases'] = data[area.properties.HHS];
+          } else {
+            area.properties['cvCases'] = 0;
+          }
+        }); // console.log(geos)
+
+        _this6.setState({
+          updated: true,
+          map: geos
+        });
+      });
+    }
+  }, {
+    key: "getServerUpdate",
+    value: function getServerUpdate() {
+      var _this7 = this;
+
+      // console.log('getPostalAreas')
+      this.mapFromServer().then(function (data) {
+        console.log(data);
+
+        _this7.setState({
+          map: data
+        });
+
+        _this7.getCOVIDNumbers();
+      });
+    }
+  }, {
+    key: "highlightFeature",
+    value: function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.85
+      });
+    }
+  }, {
+    key: "resetHighlight",
+    value: function resetHighlight(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.3
+      });
+    }
+  }, {
+    key: "onEachFeature",
+    value: function onEachFeature(feature, layer) {
+      var popupContent = "<Popup>\n        HHS Name: ".concat(feature.properties.HHS, "<br/>\n        Total cases: ").concat(feature.properties.cvCases.toString(), "<br/>\n        </Popup>");
+      layer.bindPopup(popupContent);
+      layer.on({
+        mouseover: this.highlightFeature,
+        mouseout: this.resetHighlight
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.getServerUpdate();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this8 = this;
+
+      if (this.state.updated) {
+        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          data: this.state.map,
+          style: function style(feature) {
+            // console.log(feature)
+            return {
+              color: _this8.props.colour(feature.properties.cvCases),
+              opacity: 0.5,
+              fillColor: _this8.props.colour(feature.properties.cvCases),
+              weight: 1,
+              fillOpacity: 0.3
+            };
+          },
+          onEachFeature: this.onEachFeature
+        });
+      } else {
+        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for QLD");
+      }
+    }
+  }]);
+
+  return QLD;
+}(React.Component);
+
+var VIC = /*#__PURE__*/function (_React$Component3) {
+  _inherits(VIC, _React$Component3);
+
+  var _super3 = _createSuper(VIC);
+
+  function VIC(props) {
+    var _this9;
+
+    _classCallCheck(this, VIC);
+
+    _this9 = _super3.call(this, props);
+    _this9.state = {
+      updated: false,
+      map: {}
+    };
+    _this9.mapFromServer = _this9.mapFromServer.bind(_assertThisInitialized(_this9));
+    _this9.COVIDFromServer = _this9.COVIDFromServer.bind(_assertThisInitialized(_this9));
+    _this9.getCOVIDNumbers = _this9.getCOVIDNumbers.bind(_assertThisInitialized(_this9));
+    _this9.getServerUpdate = _this9.getServerUpdate.bind(_assertThisInitialized(_this9));
+    _this9.onEachFeature = _this9.onEachFeature.bind(_assertThisInitialized(_this9));
+    return _this9;
+  }
+
+  _createClass(VIC, [{
+    key: "mapFromServer",
+    value: function mapFromServer() {
+      // console.log("sending request for VIC LGA's map")
+      return $.getJSON(window.location.origin + '/maps', {
+        state: 'vic'
+      });
+    }
+  }, {
+    key: "COVIDFromServer",
+    value: function COVIDFromServer() {
+      // console.log('getting covid numbers for VIC')
+      return $.getJSON('/getCOVIDdata', {
+        state: 'vic'
+      });
+    }
+  }, {
+    key: "getCOVIDNumbers",
+    value: function getCOVIDNumbers() {
+      var _this10 = this;
+
+      this.COVIDFromServer().then(function (data) {
+        _this10.props.setMax(data);
+
+        console.log(data);
+        var geos = _this10.state.map;
+        geos.objects.VIC_LGA_100pc_TOPO.geometries.forEach(function (area) {
+          if (data[area.properties.LGA_NAME19]) {
+            area.properties['cvCases'] = data[area.properties.LGA_NAME19];
+          } else {
+            area.properties['cvCases'] = 0;
+          }
+        }); // console.log(geos)
+
+        _this10.setState({
+          updated: true,
+          map: geos
+        });
+      });
+    }
+  }, {
+    key: "getServerUpdate",
+    value: function getServerUpdate() {
+      var _this11 = this;
+
+      // console.log('getPostalAreas')
+      this.mapFromServer().then(function (data) {
+        // console.log(data)
+        _this11.setState({
+          map: data
+        });
+
+        _this11.getCOVIDNumbers();
+      });
+    }
+  }, {
+    key: "highlightFeature",
+    value: function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.85
+      });
+    }
+  }, {
+    key: "resetHighlight",
+    value: function resetHighlight(e) {
+      var layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.3
+      });
+    }
+  }, {
+    key: "onEachFeature",
+    value: function onEachFeature(feature, layer) {
+      var popupContent = "<Popup>\n        LGA Name: ".concat(feature.properties.LGA_NAME19, "<br/>\n        Total cases: ").concat(feature.properties.cvCases.toString(), "<br/>\n        </Popup>");
+      layer.bindPopup(popupContent);
+      layer.on({
+        mouseover: this.highlightFeature,
+        mouseout: this.resetHighlight
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.getServerUpdate();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this12 = this;
+
+      if (this.state.updated) {
+        return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
+          data: this.state.map,
+          style: function style(feature) {
+            // console.log(feature)
+            return {
+              color: _this12.props.colour(feature.properties.cvCases),
+              opacity: 0.5,
+              fillColor: _this12.props.colour(feature.properties.cvCases),
+              weight: 1,
+              fillOpacity: 0.3
+            };
+          },
+          onEachFeature: this.onEachFeature
+        });
+      } else {
+        return /*#__PURE__*/React.createElement("div", null, "Waiting on post code and case data for VIC");
+      }
+    }
+  }]);
+
+  return VIC;
+}(React.Component);
+
+var NSW = /*#__PURE__*/function (_React$Component4) {
+  _inherits(NSW, _React$Component4);
+
+  var _super4 = _createSuper(NSW);
+
+  function NSW(props) {
+    var _this13;
+
+    _classCallCheck(this, NSW);
+
+    _this13 = _super4.call(this, props);
+    _this13.state = {
+      updated: false,
+      map: {}
+    };
+    _this13.mapFromServer = _this13.mapFromServer.bind(_assertThisInitialized(_this13));
+    _this13.COVIDFromServer = _this13.COVIDFromServer.bind(_assertThisInitialized(_this13));
+    _this13.getCOVIDNumbers = _this13.getCOVIDNumbers.bind(_assertThisInitialized(_this13));
+    _this13.getPostalAreas = _this13.getPostalAreas.bind(_assertThisInitialized(_this13));
+    _this13.onEachFeature = _this13.onEachFeature.bind(_assertThisInitialized(_this13));
+    _this13.highlightFeature = _this13.highlightFeature.bind(_assertThisInitialized(_this13));
+    _this13.resetHighlight = _this13.resetHighlight.bind(_assertThisInitialized(_this13));
+    return _this13;
   }
 
   _createClass(NSW, [{
@@ -66559,13 +66836,13 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
   }, {
     key: "getCOVIDNumbers",
     value: function getCOVIDNumbers() {
-      var _this6 = this;
+      var _this14 = this;
 
       this.COVIDFromServer().then(function (data) {
         // console.log(data)
-        _this6.props.setMax(data);
+        _this14.props.setMax(data);
 
-        var geos = _this6.state.map;
+        var geos = _this14.state.map;
         geos.objects.NSW_PC_100pc_TOPO.geometries.forEach(function (area) {
           if (data[area.properties.POA_CODE16]) {
             area.properties['cvCases'] = data[area.properties.POA_CODE16];
@@ -66574,7 +66851,7 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
           }
         });
 
-        _this6.setState({
+        _this14.setState({
           updated: true,
           map: geos
         });
@@ -66583,12 +66860,12 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
   }, {
     key: "getPostalAreas",
     value: function getPostalAreas() {
-      var _this7 = this;
+      var _this15 = this;
 
       // console.log('getPostalAreas')
       this.mapFromServer().then(function (data) {
         // console.log(data)
-        _this7.setState({
+        _this15.setState({
           map: data
         });
       });
@@ -66628,7 +66905,7 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var _this8 = this;
+      var _this16 = this;
 
       if (this.state.updated) {
         return /*#__PURE__*/React.createElement(_TopoJSON__WEBPACK_IMPORTED_MODULE_0__["default"], {
@@ -66636,9 +66913,9 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
           style: function style(feature) {
             // console.log(feature)
             return {
-              color: _this8.props.colour(feature.properties.cvCases),
+              color: _this16.props.colour(feature.properties.cvCases),
               opacity: 0.5,
-              fillColor: _this8.props.colour(feature.properties.cvCases),
+              fillColor: _this16.props.colour(feature.properties.cvCases),
               weight: 1,
               fillOpacity: 0.3
             };
@@ -66654,25 +66931,25 @@ var NSW = /*#__PURE__*/function (_React$Component2) {
   return NSW;
 }(React.Component);
 
-var App = /*#__PURE__*/function (_React$Component3) {
-  _inherits(App, _React$Component3);
+var App = /*#__PURE__*/function (_React$Component5) {
+  _inherits(App, _React$Component5);
 
-  var _super3 = _createSuper(App);
+  var _super5 = _createSuper(App);
 
   function App(props) {
-    var _this9;
+    var _this17;
 
     _classCallCheck(this, App);
 
-    _this9 = _super3.call(this, props);
-    _this9.state = {
+    _this17 = _super5.call(this, props);
+    _this17.state = {
       lat: -27.5977572,
       lng: 134.4407826,
       zoom: 5,
       maxCases: 0
     };
-    _this9.setMax = _this9.setMax.bind(_assertThisInitialized(_this9));
-    return _this9;
+    _this17.setMax = _this17.setMax.bind(_assertThisInitialized(_this17));
+    return _this17;
   }
 
   _createClass(App, [{
@@ -66705,6 +66982,12 @@ var App = /*#__PURE__*/function (_React$Component3) {
         colour: colour,
         setMax: this.setMax
       }), /*#__PURE__*/React.createElement(VIC, {
+        colour: colour,
+        setMax: this.setMax
+      }), /*#__PURE__*/React.createElement(QLD, {
+        colour: colour,
+        setMax: this.setMax
+      }), /*#__PURE__*/React.createElement(WA, {
         colour: colour,
         setMax: this.setMax
       })));

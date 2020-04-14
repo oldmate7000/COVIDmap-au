@@ -4,6 +4,8 @@ const path          = require('path');
 const request       = require('request')
 const NSWpostcodes  = require('./geojson/NSW_PC_100pc_TOPO.json')
 const VICLGAs       = require('./geojson/VIC_LGA_100pc_TOPO.json')
+const QLDHHSs       = require('./geojson/QLD_HHS_100pc_TOPO.json')
+const WALGAs        = require('./geojson/WA_LGA_100pc_TOPO.json')
 
 require('dotenv').config() //so we can make use of .env files
 
@@ -30,6 +32,12 @@ app.get('/maps', (req, res) => {
       // console.log('sending vic map')
       res.json(VICLGAs)
       break;
+    case 'qld':
+      res.json(QLDHHSs)
+      break
+    case 'wa':
+      res.json(WALGAs)
+      break
   }
 })
 
@@ -76,6 +84,47 @@ app.get('/getCOVIDdata', function (req, res) {
         }
       })
       break;
+    case 'qld':
+      request('https://interactive.guim.co.uk/covidfeeds/queensland.json', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let resJSON = JSON.parse(body)
+          let caseData = {}
+
+          // console.log(resJSON)
+
+          resJSON.forEach(area => {
+            caseData[area.place] = parseInt(area.count)
+          })
+
+          delete caseData.Total
+          // console.log(caseData)
+          res.json(caseData)
+        }
+        if (error) {
+          console.log(error)
+        }
+      })
+      break;
+      case 'wa':
+        request('https://interactive.guim.co.uk/covidfeeds/wa.json', function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            let resJSON = JSON.parse(body)
+            let caseData = {}
+  
+            // console.log(resJSON)
+  
+            resJSON.forEach(area => {
+              caseData[area.place] = parseInt(area.count)
+            })
+  
+            // console.log(caseData)
+            res.json(caseData)
+          }
+          if (error) {
+            console.log(error)
+          }
+        })
+        break;
   }
 })
   

@@ -11,6 +11,240 @@ import './style.css';
 // import { Control } from 'leaflet';
 // import { gridLayer } from 'leaflet';
 
+class WA extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            updated: false,
+            map: {}
+        }
+        this.mapFromServer = this.mapFromServer.bind(this)
+        this.COVIDFromServer = this.COVIDFromServer.bind(this)
+        this.getCOVIDNumbers = this.getCOVIDNumbers.bind(this)
+        this.getServerUpdate = this.getServerUpdate.bind(this)
+        this.onEachFeature = this.onEachFeature.bind(this)
+    }
+
+    mapFromServer() {
+        // console.log("sending request for WA LGA's map")
+        return $.getJSON(window.location.origin + '/maps', {state:'wa'})
+    }
+
+    COVIDFromServer() {
+        // console.log('getting covid numbers for WA')
+        return $.getJSON('/getCOVIDdata', {state:'wa'})
+    }
+
+    getCOVIDNumbers() {
+        this.COVIDFromServer().then((data) => {
+            this.props.setMax(data)
+            console.log(data)
+
+            let geos = this.state.map
+            geos.objects.WA_LGA_100pc_TOPO.geometries.forEach(area => {
+                if(data[area.properties.LGA_NAME19]) {
+                    area.properties['cvCases'] = data[area.properties.LGA_NAME19]
+                } else {
+                    area.properties['cvCases'] = 0
+                }
+            })
+
+            // console.log(geos)
+            this.setState({
+                updated: true,
+                map: geos,
+            })
+        })
+    }
+
+    getServerUpdate() {
+        // console.log('getPostalAreas')
+        this.mapFromServer().then((data) => {
+            // console.log(data)
+            this.setState({
+                map: data
+            })
+            this.getCOVIDNumbers()
+        })
+    }
+
+    highlightFeature(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.85
+        });
+    }
+    
+    resetHighlight(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.3
+        });
+    }
+    
+    onEachFeature(feature, layer){
+        const popupContent = 
+        `<Popup>
+        LGA Name: ${feature.properties.LGA_NAME19}<br/>
+        Total cases: ${feature.properties.cvCases.toString()}<br/>
+        </Popup>`
+        
+        layer.bindPopup(popupContent)
+        layer.on({
+            mouseover: this.highlightFeature,
+            mouseout: this.resetHighlight
+        });
+    }
+
+    componentDidMount() {
+        this.getServerUpdate()
+    }
+
+    render() {
+        if (this.state.updated) {
+            return (
+                <TopoJSON
+                data = {this.state.map}
+                style = {(feature) => {
+                    // console.log(feature)
+                    return {
+                        color: this.props.colour(feature.properties.cvCases),
+                        opacity: 0.5,
+                        fillColor: this.props.colour(feature.properties.cvCases),
+                        weight: 1,
+                        fillOpacity: 0.3
+                    }
+                }}
+                onEachFeature = {this.onEachFeature}
+                />
+            )
+        } else {
+            return (
+                <div>Waiting on post code and case data for WA</div>
+            )
+        }
+    }
+}
+
+class QLD extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            updated: false,
+            map: {}
+        }
+        this.mapFromServer = this.mapFromServer.bind(this)
+        this.COVIDFromServer = this.COVIDFromServer.bind(this)
+        this.getCOVIDNumbers = this.getCOVIDNumbers.bind(this)
+        this.getServerUpdate = this.getServerUpdate.bind(this)
+        this.onEachFeature = this.onEachFeature.bind(this)
+    }
+
+    mapFromServer() {
+        // console.log("sending request for QLD LGA's map")
+        return $.getJSON(window.location.origin + '/maps', {state:'qld'})
+    }
+
+    COVIDFromServer() {
+        // console.log('getting covid numbers for QLD')
+        return $.getJSON('/getCOVIDdata', {state:'qld'})
+    }
+
+    getCOVIDNumbers() {
+        this.COVIDFromServer().then((data) => {
+            this.props.setMax(data)
+            console.log(data)
+
+            let geos = this.state.map
+            geos.objects.HHS_2014.geometries.forEach(area => {
+                if(data[area.properties.HHS]) {
+                    area.properties['cvCases'] = data[area.properties.HHS]
+                } else {
+                    area.properties['cvCases'] = 0
+                }
+            })
+
+            // console.log(geos)
+            this.setState({
+                updated: true,
+                map: geos,
+            })
+        })
+    }
+
+    getServerUpdate() {
+        // console.log('getPostalAreas')
+        this.mapFromServer().then((data) => {
+            console.log(data)
+            this.setState({
+                map: data
+            })
+            this.getCOVIDNumbers()
+        })
+    }
+
+    highlightFeature(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.85
+        });
+    }
+    
+    resetHighlight(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            fillOpacity: 0.3
+        });
+    }
+    
+    onEachFeature(feature, layer){
+        const popupContent = 
+        `<Popup>
+        HHS Name: ${feature.properties.HHS}<br/>
+        Total cases: ${feature.properties.cvCases.toString()}<br/>
+        </Popup>`
+        
+        layer.bindPopup(popupContent)
+        layer.on({
+            mouseover: this.highlightFeature,
+            mouseout: this.resetHighlight
+        });
+    }
+
+    componentDidMount() {
+        this.getServerUpdate()
+    }
+
+    render() {
+        if (this.state.updated) {
+            return (
+                <TopoJSON
+                data = {this.state.map}
+                style = {(feature) => {
+                    // console.log(feature)
+                    return {
+                        color: this.props.colour(feature.properties.cvCases),
+                        opacity: 0.5,
+                        fillColor: this.props.colour(feature.properties.cvCases),
+                        weight: 1,
+                        fillOpacity: 0.3
+                    }
+                }}
+                onEachFeature = {this.onEachFeature}
+                />
+            )
+        } else {
+            return (
+                <div>Waiting on post code and case data for QLD</div>
+            )
+        }
+    }
+}
+
 class VIC extends React.Component {
     constructor(props) {
         super(props)
@@ -38,7 +272,7 @@ class VIC extends React.Component {
     getCOVIDNumbers() {
         this.COVIDFromServer().then((data) => {
             this.props.setMax(data)
-            // console.log(data)
+            console.log(data)
 
             let geos = this.state.map
             geos.objects.VIC_LGA_100pc_TOPO.geometries.forEach(area => {
@@ -288,6 +522,14 @@ class App extends React.Component {
                         setMax = {this.setMax}
                     />
                     <VIC
+                        colour = {colour}
+                        setMax = {this.setMax}
+                    />
+                    <QLD
+                        colour = {colour}
+                        setMax = {this.setMax}
+                    />
+                    <WA
                         colour = {colour}
                         setMax = {this.setMax}
                     />
