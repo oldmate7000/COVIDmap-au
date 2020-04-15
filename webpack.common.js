@@ -37,7 +37,14 @@ module.exports = {
         loader: [MiniCssExtractPlugin.loader, 'css-loader'],
         exclude: /node_modules/,
         include: path.join(__dirname, './app/src'),
-      }
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        loader: ['file-loader'],
+        exclude: /node_modules/,
+        include: path.join(__dirname, './app/src/assets'),
+        
+        },
     ]
   },
 };

@@ -10,6 +10,7 @@ const colourscale = require ('d3-scale-chromatic')
 
 import TopoJSON from './TopoJSON';
 import './style.css';
+import turboscale from './assets/turboscale.png'
 // import { Control } from 'leaflet';
 // import { gridLayer } from 'leaflet';
 
@@ -611,7 +612,7 @@ class App extends React.Component {
                     <Control position='bottomleft'>
                         <div id='legend'>
                             <h1>0</h1>
-                            <img src='/assets/turboscale.png'/>
+                            <img src={turboscale}/>
                             <h1>{this.state.maxCases}</h1>
                         </div>
                         
