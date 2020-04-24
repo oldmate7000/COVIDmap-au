@@ -1,7 +1,7 @@
 {
-  "name": "yawa",
-  "version": "0.0.1",
-  "description": "A Weather App, built on MERN stack, using OpenWeatherMap's API",
+  "name": "COVIDmap-au",
+  "version": "0.1.0",
+  "description": "a high-fidelity heatmap of coronavirus cases in australia",
   "main": "server.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
@@ -29,9 +29,7 @@
     "body-parser": "^1.19.0",
     "d3-scale": "^3.2.1",
     "d3-scale-chromatic": "^1.5.0",
-    "dotenv": "^8.2.0",
     "express": "^4.16.4",
-    "express-session": "^1.17.0",
     "jquery": "^3.4.1",
     "leaflet": "^1.6.0",
     "react": "^16.13.1",

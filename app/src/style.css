@@ -1,11 +1,9 @@
-body {
-  margin: 0;
-  padding: 0;
-}
+
 
 .leaflet-container {
-  height: 100vh;
+  height: calc(100vh - 5em);
   width: 100%;
+  min-width: 300px;
 }
 
 #legend {
@@ -26,4 +24,26 @@ body {
 #legend h1 {
   margin: 0;
   padding: 0;
+  color: white
 }
+
+.loadinginfo {
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: visible;
+}
+

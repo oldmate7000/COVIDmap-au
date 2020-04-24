@@ -4,10 +4,8 @@ const path          = require('path');
 const request       = require('request')
 const NSWpostcodes  = require('./geojson/NSW_PC_100pc_TOPO.json')
 const VICLGAs       = require('./geojson/VIC_LGA_100pc_TOPO.json')
-const QLDHHSs       = require('./geojson/QLD_HHS_100pc_TOPO.json')
+const QLDLGAs       = require('./geojson/QLD_LGA_100pc_TOPO.json')
 const WALGAs        = require('./geojson/WA_LGA_100pc_TOPO.json')
-
-require('dotenv').config() //so we can make use of .env files
 
 
 const app           = express();
@@ -33,7 +31,7 @@ app.get('/maps', (req, res) => {
       res.json(VICLGAs)
       break;
     case 'qld':
-      res.json(QLDHHSs)
+      res.json(QLDLGAs)
       break
     case 'wa':
       res.json(WALGAs)
@@ -93,10 +91,10 @@ app.get('/getCOVIDdata', function (req, res) {
           // console.log(resJSON)
 
           resJSON.forEach(area => {
-            caseData[area.place.split('\n ').join('')] = parseInt(area.count)
+            caseData[area.place.split(' ').filter((word) => {return !word.match(/\(/)}).map((word) => {return word.toLowerCase()}).join(' ')] = parseInt(area.count)
           })
 
-          delete caseData.Total
+          delete caseData.total
           // console.log(caseData)
           res.json(caseData)
         }
