@@ -6,7 +6,7 @@ const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 module.exports = {
   context: path.join(__dirname, './app'),
   entry: {
-    index: './src/index.js',
+    index: './src/index.jsx',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
@@ -20,7 +20,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         options: {
           presets: ['@babel/preset-env', '@babel/preset-react'],
